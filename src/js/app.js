@@ -3,6 +3,8 @@ import {createFlowChartInfo} from './FlowChart';
 import {typeEnum} from './FlowChart';
 import * as flowchart from 'flowchart.js';
 
+let nodesCreated = [];
+
 $(document).ready(function () {
     $('#codeSubmissionButton').click(() => {
         let codeToParse = $('#codePlaceholder').val();
@@ -15,8 +17,6 @@ $(document).ready(function () {
 
     });
 });
-
-let nodesCreated = [];
 
 function convertTreeToCFG(tree) {
     if (Object.keys(tree).length === 0)
@@ -38,7 +38,6 @@ function createComputation (tree,node,con,callerName){
     nodesCreated.push(myName);
     return traverse(tree.trueBranch,node +newNode,con,myName);
 }
-
 
 function createMerge (tree,node,con,callerName) {
     let myName = 'op_' + tree.num;
