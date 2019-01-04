@@ -60,9 +60,7 @@ export function createFlowChartInfo (code,input){
     let codeTree = esprima.parse(code,{loc:true,range:true});
     inputVector = input;
     originalCode = code;
-    let flowChartTree = codeTree.body.reduce((acc,curr)=>nodeTraverse(curr,acc),{});
-
-    return flowChartTree;
+    return codeTree.body.reduce((acc, curr) => nodeTraverse(curr, acc), {});
 }
 
 function handleComputation(node,tree) {
@@ -91,21 +89,36 @@ function setColor(test) {
     return  eval(codeToEval);
 }
 
+
+function mergeMergePoints (ifTrueBracnh,ifFalseBranch,mergePoint){
+    let lastTrue =  getLastInTree(ifTrueBracnh);
+    let lastFalse = getLastInTree(ifFalseBranch);
+    if (lastTrue.type === typeEnum.merge){
+        lastTrue.num = mergePoint.num;
+    }else {
+        lastTrue.trueBranch = mergePoint;
+    }
+    if (lastFalse.type === typeEnum.merge){
+        lastFalse.num = mergePoint.num;
+    }else {
+        lastFalse.trueBranch = mergePoint;
+    }
+}
+
 function handleIf(ifNode,tree) {
     let newIfBranch = {code:  originalCode.substring(ifNode.test.range[0],ifNode.test.range[1]), color:currentColor, trueBranch: undefined, falseBranch:undefined, num:counter, type:typeEnum.condition};
     counter++;
     let newMergePoint = {type:typeEnum.merge, num: counter,color:currentColor};    counter++;
     let ditColor = setColor(originalCode.substring(ifNode.test.range[0],ifNode.test.range[1]));      currentColor = ditColor;
     let newTrueBranch = nodeTraverse(ifNode.consequent,{});
-    getLastInTree(newTrueBranch).trueBranch= newMergePoint;
     let elseNode;
     if (ifNode.alternate=== null )
         elseNode = newMergePoint;
     else{
         currentColor = !ditColor;
         elseNode = nodeTraverse(ifNode.alternate,{});
-        getLastInTree(elseNode).trueBranch= newMergePoint;
     }
+    mergeMergePoints(newTrueBranch,elseNode,newMergePoint);
     newIfBranch.trueBranch = newTrueBranch;
     newIfBranch.falseBranch = elseNode;
     currentColor = true;

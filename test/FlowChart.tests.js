@@ -158,6 +158,38 @@ describe('Test createFlowChart',() => {
         num: 1,            type: 1 }
     );});});
 
+describe('Test createFlowChart',() => {
+    it('test11', () => { assert.deepEqual(        (createFlowChartInfo('if (false){ x++; }else if (true){ y++; } else { z++;}', [])),
+        { code: 'false',            color: true,            trueBranch:                { code: 'x++',
+            color: false,                    trueBranch: { type: 3, num: 2, color: true },
+            falseBranch: undefined,                    num: 3,
+            type: 2 },            falseBranch:
+                { code: 'true',                    color: true,                    trueBranch:                        { code: 'y++',
+                    color: true,                            trueBranch: { type: 3, num: 2, color: true },
+                    falseBranch: undefined,                            num: 6,
+                    type: 2 },                    falseBranch:
+                        { code: 'z++',                            color: false,
+                            trueBranch: { type: 3, num: 2, color: true },                            falseBranch: undefined,
+                            num: 7,                            type: 2 },
+                num: 4,                    type: 1 },            num: 1,            type: 1 }
+    );});});
+
+
+describe('Test createFlowChart',() => {
+    it('test12', () => { assert.deepEqual(
+        (createFlowChartInfo('function f (x) {if (x){ if (true) return 1; else return 2;} }', [true])),
+        { code: 'x',            color: true,            trueBranch:                { code: 'true',
+            color: true,                    trueBranch:                        { code: 'return 1;',
+                color: true,                            trueBranch: { type: 3, num: 2, color: true },
+                falseBranch: undefined,                            num: 5,
+                type: 6 },                    falseBranch:
+                        { code: 'return 2;',                            color: false,
+                            trueBranch: { type: 3, num: 2, color: true },                            falseBranch: undefined,
+                            num: 6,                            type: 6 },                    num: 3,                    type: 1 },
+        falseBranch: { type: 3, num: 2, color: true },            num: 1,            type: 1 }
+    );});});
+
+
 /*
 
 describe('Test createFlowChart',() => {
